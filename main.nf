@@ -15,6 +15,8 @@ process extract_training_sets {
     input:
     path(good_coord)
     path(medium_coord)
+    path(raw_vcf)
+    path(raw_vcf_tbi) 
 
 
     output:
@@ -27,7 +29,7 @@ process extract_training_sets {
     echo "\$(date) - Extracting Good SNPs"
     echo ""
 
-    bcftools view -T ${good_coord} "${params.rawVCF}" -Oz -o "VQSR_Training_Good.${params.Ref_Abbr}.vcf"
+    bcftools view -T ${good_coord} "${raw_vcf}" -Oz -o "VQSR_Training_Good.${params.Ref_Abbr}.vcf"
     
     echo ""
     echo "\$(date) - DONE!"
@@ -37,7 +39,7 @@ process extract_training_sets {
     echo "\$(date) - Extracting Medium SNPs"
     echo ""
 
-    bcftools view -T ${medium_coord} "${params.rawVCF}" -Oz -o "VQSR_Training_Medium.${params.Ref_Abbr}.vcf"
+    bcftools view -T ${medium_coord} "${raw_vcf}" -Oz -o "VQSR_Training_Medium.${params.Ref_Abbr}.vcf"
 
     echo ""
     echo "\$(date) - DONE!"
@@ -158,9 +160,9 @@ process run_VQSR {
 }
 
 workflow {
-    training_data = extract_training_sets("${params.GoodCoord}", "${params.MediumCoord}")
     vcf = file("${params.rawVCF}")
     vcf_index = file("${params.rawVCF}.tbi")
+    training_data = extract_training_sets("${params.GoodCoord}", "${params.MediumCoord}", vcf, vcf_index)
     ref = file("${params.ref}/${params.referencePrefix}.fa") 
     ref_index = Channel
         .fromPath("${params.ref}/${params.referencePrefix}.*{fai,dict}")
