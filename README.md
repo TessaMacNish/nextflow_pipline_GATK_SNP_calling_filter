@@ -2,7 +2,7 @@
 
 ## What does this pipeline do?
 
-This pipline filters GATK called SNPs (in VCF format) using ApplyVQSR. The tools used in this pipeline are gatk4 version 4.6.1.0, fastp version, 1.0.1, samtools version 1.22.1, and bwa version 0.7.19. This pipeline submits all individual steps in the pipeline as SLURM scripts.  
+This pipline filters GATK called SNPs (in VCF format) using ApplyVQSR. The tools used in this pipeline are gatk4 version 4.6.1.0 and bcftools version 1.15. This pipeline submits all individual steps in the pipeline as SLURM scripts.  
 
 ## Running this pipeline using only default parameters
 
