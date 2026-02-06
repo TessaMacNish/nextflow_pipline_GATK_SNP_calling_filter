@@ -7,6 +7,7 @@ params.MediumCoord = "${baseDir}/data/VQSR_training_medium.txt"
 params.ref = "${baseDir}/Genome/Reference"
 params.KnownSites = "${baseDir}/data/Truth_Set.DV10.SNPs.vcf.gz"
 params.outputVCFprefix = "Samples_minicore_1-135_whole_genome_called"
+params.tranche = "99.9"
 
 process extract_training_sets {
     container 'oras://community.wave.seqera.io/library/bcftools:1.15--6a7920e74c21902b'
@@ -59,22 +60,9 @@ process run_VQSR {
     output:
     tuple path("output.SNP.${params.Ref_Abbr}.recal"),
           path("output.SNP.${params.Ref_Abbr}.tranches"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.5.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.100.0.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.9.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.0.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.5.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.0.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.95.0.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.90.0.tranche.vcf.gz"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.5.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.100.0.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.9.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.0.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.5.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.0.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.95.0.tranche.vcf.gz.tbi"),
-          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.90.0.tranche.vcf.gz.tbi")
+          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.${params.tranche}.tranche.vcf.gz"),
+          path("${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.${params.tranche}.tranche.vcf.gz.tbi")
+
 
     script:
     """
@@ -91,67 +79,15 @@ process run_VQSR {
     echo ""
     echo "\$(date) - Recalibrating Variants: DONE!"
     echo ""
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 99.5"
+
+    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: ${params.tranche}"
     echo ""
 
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.5.tranche.vcf.gz" --truth-sensitivity-filter-level 99.5 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-    echo ""
-  
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 100.0"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.100.0.tranche.vcf.gz" --truth-sensitivity-filter-level 100.0 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
+    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.${params.tranche}.tranche.vcf.gz" --truth-sensitivity-filter-level ${params.tranche} --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
 
     echo ""
     echo "\$(date) - Recalibrating Variants: DONE!"
 
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 99.9"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.9.tranche.vcf.gz" --truth-sensitivity-filter-level 99.9 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 99.0"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.99.0.tranche.vcf.gz" --truth-sensitivity-filter-level 99.0 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 98.5"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.5.tranche.vcf.gz" --truth-sensitivity-filter-level 98.5 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 98.0"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.98.0.tranche.vcf.gz" --truth-sensitivity-filter-level 98.0 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 95.0"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.95.0.tranche.vcf.gz" --truth-sensitivity-filter-level 95.0 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
-
-    echo ""
-    echo "\$(date) - Recalibrating Variants: DONE!"
-
-    echo "\$(date) - Apply VQSR - Truth Sensitivity Threshold: 90.0"
-    echo ""
-
-    gatk --java-options "-Xmx100g -Xms100g" ApplyVQSR -R "${ref}" -V "${raw_SNPs}" -O "${params.outputVCFprefix}.${params.Ref_Abbr}.SNPs.90.0.tranche.vcf.gz" --truth-sensitivity-filter-level 90.0 --tranches-file "output.SNP.${params.Ref_Abbr}.tranches" --recal-file "output.SNP.${params.Ref_Abbr}.recal" -mode SNP
 
     echo ""
     echo "\$(date) - Variant Score Recalibration Applied!"
