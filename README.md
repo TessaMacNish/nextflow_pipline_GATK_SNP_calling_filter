@@ -93,8 +93,12 @@ The purpose of the parameters is to make the pipline more flexible, so that the 
 
 `outputVCFprefix` - This parameter determines how the soft-filtered final output VCFs are named. 
 
+`tranche` - The tranche level you want to filter the VCF file by. The defualt is 99.9.
+
 An example of how to use the parameters when running your nextflow pipeline is below. All other parameters can be used in the same way.
 
 ``` bash
-nextflow run main.nf --rawVCF "/path/to/your/rawVCF.vcf.gz"
+nextflow run main.nf --rawVCF "/path/to/your/rawVCF.vcf.gz" --tranche 99.5
 ```
+
+Alternatively, you can edit the parameters directly in the main.nf file. 
